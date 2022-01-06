@@ -6,6 +6,7 @@ import com.albo.challenge.models.HeroesEntity;
 import com.albo.challenge.repositories.CollaboratorsRepository;
 import com.albo.challenge.repositories.HeroesRepository;
 import com.albo.challenge.services.CollaboratorsService;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -22,6 +23,8 @@ public class CollaboratorsServiceImpl implements CollaboratorsService {
     HeroesRepository heroesRepository;
     @Inject
     CollaboratorsRepository collaboratorsRepository;
+    @ConfigProperty(name = "sync.message")
+    String message;
 
     /**
      * Get the list of creators involved in the comics
@@ -52,7 +55,7 @@ public class CollaboratorsServiceImpl implements CollaboratorsService {
                         }
                 );
         return InvolvedResponse.builder()
-                .last_sync(hero.getLastSync().format(DateTimeFormatter.ofPattern("dd-MM-yyyy hh:mm:ss")))
+                .last_sync(message + ": " + hero.getLastSync().format(DateTimeFormatter.ofPattern("dd-MM-yyyy hh:mm:ss")))
                 .colorists(colorists)
                 .editors(editors)
                 .writers(writers)

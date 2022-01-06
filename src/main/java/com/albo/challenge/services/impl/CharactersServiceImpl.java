@@ -8,6 +8,7 @@ import com.albo.challenge.repositories.ComicsCharactersRepository;
 import com.albo.challenge.repositories.ComicsRepository;
 import com.albo.challenge.repositories.HeroesRepository;
 import com.albo.challenge.services.CharactersService;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -28,6 +29,9 @@ public class CharactersServiceImpl implements CharactersService {
     ComicsCharactersRepository comicsCharactersRepository;
     @Inject
     ComicsRepository comicsRepository;
+    @ConfigProperty(name = "sync.message")
+    String message;
+
 
     /**
      * Get the interactions of a hero
@@ -62,7 +66,7 @@ public class CharactersServiceImpl implements CharactersService {
         );
 
         return InteractionsResponse.builder()
-                .last_sync(hero.getLastSync().format(DateTimeFormatter.ofPattern("dd-MM-yyyy hh:mm:ss")))
+                .last_sync(message + ": " + hero.getLastSync().format(DateTimeFormatter.ofPattern("dd-MM-yyyy hh:mm:ss")))
                 .characters(characters)
                 .build();
     }

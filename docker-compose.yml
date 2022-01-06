@@ -1,0 +1,30 @@
+version: "3.8"
+
+networks:
+  backend:
+    external: false
+    name: backend
+services:
+  db:
+    networks:
+      - backend
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=marvel
+      - POSTGRES_PASSWORD=marvel
+    container_name: db
+    ports:
+      - 5432:5432
+  comics-jvm:
+    environment:
+      - QUARKUS_DATASOURCE_URL=jdbc:postgresql://db:5432/marvel
+      - QUARKUS_DATASOURCE_USERNAME=marvel
+      - QUARKUS_DATASOURCE_PASSWORD=marvel
+    networks:
+      - backend
+    image: quarkus/comics-jvm
+    container_name: comics-jvm
+    ports:
+      - 80:8080
+    links:
+      - db
